@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CuiXA Easy Mode — Prototip</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #071A3E;
+  --navy2:   #0A2150;
+  --navy3:   #0D2860;
+  --blue:    #1B6EF3;
+  --blue2:   #2B7FFF;
+  --blue-lt: #4E9BFF;
+  --blue-bg: #EEF4FF;
+  --white:   #FFFFFF;
+  --offwhite:#F7F9FF;
+  --grey:    #8FA3C0;
+  --grey2:   #B8CADE;
+  --dark:    #1A2F50;
+  --danger:  #E83A3A;
+  --warn:    #F59B00;
+  --ok:      #1DBF73;
+  --card-r:  20px;
+  --shadow:  0 4px 24px rgba(7,26,62,0.18);
+  --shadow2: 0 8px 32px rgba(7,26,62,0.28);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(ellipse 110% 80% at 50% 30%, #0e2a6e 0%, #071A3E 60%, #040e22 100%);
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Stars background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 8%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 70%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ===========================
+   LAYOUT OUTER
+   =========================== */
+.outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.proto-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+/* Screen selector tabs */
+.screen-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  padding: 5px;
+}
+
+.screen-tab {
+  padding: 7px 18px;
+  border-radius: 100px;
+  border: none;
+  background: none;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.22s;
+}
+
+.screen-tab.active {
+  background: var(--blue);
+  color: white;
+  box-shadow: 0 2px 12px rgba(27,110,243,0.4);
+}
+
+.screen-tab:hover:not(.active) { color: rgba(255,255,255,0.8); }
+
+/* ===========================
+   PHONE SHELL
+   =========================== */
+.phone-wrap {
+  position: relative;
+  width: 375px;
+}
+
+.phone {
+  width: 375px;
+  height: 780px;
+  background: var(--navy);
+  border-radius: 44px;
+  border: 2px solid rgba(100,150,255,0.18);
+  box-shadow:
+    0 0 0 6px rgba(7,26,62,0.6),
+    0 0 0 7px rgba(100,150,255,0.12),
+    0 40px 100px rgba(0,0,0,0.7),
+    0 0 60px rgba(27,110,243,0.12);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dynamic island */
+.island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 28px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 50;
+}
+
+/* ===========================
+   HEADER AREA
+   =========================== */
+.app-header {
+  background: var(--navy2);
+  padding: 48px 20px 0;
+  flex-shrink: 0;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.brand {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+.brand em { font-style: normal; color: var(--blue-lt); }
+
+.brand-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-top: 1px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.hdr-btn {
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.hdr-btn:hover { background: rgba(255,255,255,0.14); }
+
+.badge-dot {
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--danger);
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--navy2);
+}
+
+/* Top nav tabs */
+.top-nav {
+  display: flex;
+  gap: 4px;
+  padding-bottom: 0;
+}
+
+.top-tab {
+  padding: 8px 14px;
+  border-radius: 12px 12px 0 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.top-tab svg { opacity: 0.5; }
+.top-tab.active { color: white; background: rgba(255,255,255,0.08); }
+.top-tab.active svg { opacity: 1; }
+.top-tab:hover:not(.active) { color: rgba(255,255,255,0.7); }
+
+/* ===========================
+   CONTENT AREA
+   =========================== */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  background: var(--offwhite);
+}
+
+.app-content::-webkit-scrollbar { display: none; }
+
+/* ===========================
+   BOTTOM NAV
+   =========================== */
+.bottom-nav {
+  background: var(--navy2);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0 22px;
+  flex-shrink: 0;
+}
+
+.bnav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 20px;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.bnav-item span {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.2s;
+}
+
+.bnav-item svg { opacity: 0.3; transition: opacity 0.2s; }
+.bnav-item.active svg { opacity: 1; }
+.bnav-item.active span { color: var(--blue-lt); }
+.bnav-item:hover { background: rgba(255,255,255,0.05); }
+
+/* ===========================
+   SCREENS
+   =========================== */
+.screen { display: none; padding-bottom: 10px; }
+.screen.active { display: block; animation: fadeSlide 0.28s ease; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   SHARED COMPONENTS
+   =========================== */
+
+/* White section card */
+.section-card {
+  background: white;
+  border-radius: var(--card-r);
+  margin: 12px 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.section-card-inner { padding: 16px; }
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.section-head h3 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.see-all {
+  font-size: 0.7rem;
+  color: var(--blue);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Search bar */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,0,0,0.04);
+  border: 1.5px solid rgba(0,0,0,0.07);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 12px 14px 0;
+  transition: border-color 0.2s;
+}
+
+.search-bar:focus-within { border-color: var(--blue); background: white; }
+.search-bar input { background: none; border: none; outline: none; font-size: 0.85rem; color: var(--dark); flex: 1; font-family: 'Inter', sans-serif; }
+.search-bar input::placeholder { color: var(--grey2); }
+
+/* Blue pill chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+
+.chip-blue { background: var(--blue); color: white; }
+.chip-outline { background: transparent; color: var(--blue); border-color: rgba(27,110,243,0.3); }
+.chip-outline:hover { background: var(--blue-bg); }
+
+/* Icon circle */
+.icon-circle {
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.icon-circle:hover { transform: scale(1.05); background: var(--blue2); }
+.icon-circle.white { background: rgba(27,110,243,0.08); }
+.icon-circle.sm { width: 38px; height: 38px; border-radius: 12px; }
+
+/* Product row */
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.product-row:last-child { border-bottom: none; }
+.product-row:hover { background: rgba(27,110,243,0.03); }
+
+.prod-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--blue-bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.prod-info { flex: 1; min-width: 0; }
+.prod-name { font-size: 0.85rem; font-weight: 600; color: var(--dark); }
+.prod-meta { font-size: 0.7rem; color: var(--grey); margin-top: 2px; }
+
+.prod-right { text-align: right; flex-shrink: 0; }
+.prod-qty { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--dark); }
+.prod-zone { font-size: 0.68rem; color: var(--blue); font-weight: 600; margin-top: 1px; }
+.prod-qty.alert { color: var(--danger); }
+.prod-qty.warn  { color: var(--warn); }
+
+/* Alert dot */
+.alert-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  flex-shrink: 0;
+}
+.alert-dot.warn { background: var(--warn); }
+
+/* Blue button */
+.btn-blue {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.22s;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(27,110,243,0.35);
+}
+
+.btn-blue:hover { background: var(--blue2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,110,243,0.45); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--blue);
+  border: 2px solid rgba(27,110,243,0.35);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  width: 100%;
+}
+
+.btn-outline:hover { background: var(--blue-bg); border-color: var(--blue); }
+
+/* Add button */
+.fab {
+  position: fixed;
+  bottom: 90px;
+  right: calc(50% - 187px + 16px);
+  width: 48px; height: 48px;
+  border-radius: 16px;
+  background: var(--blue);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(27,110,243,0.5);
+  transition: all 0.2s;
+  z-index: 20;
+}
+
+.fab:hover { background: var(--blue2); transform: scale(1.08); }
+
+/* Divider label */
+.divider-label {
+  padding: 10px 14px 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* ===========================
+   SCREEN: INICI
+   =========================== */
+#s-inici .hero-area {
+  background: linear-gradient(160deg, var(--navy2) 0%, var(--navy3) 100%);
+  padding: 20px 20px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+#s-inici .hero-area::after {
+  content: '';
+  position: absolute;
+  right: -20px; top: -20px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(27,110,243,0.25) 0%, transparent 70%);
+}
+
+.warehouse-iso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 16px;
+}
+
+.iso-block {
+  width: 70px; height: 40px;
+  background: var(--blue);
+  border-radius: 8px;
+  position: relative;
+  margin: 0 4px;
+  opacity: 0.85;
+}
+
+.iso-block::before {
+  content: '';
+  position: absolute;
+  top: -14px; left: 0; right: 0;
+  height: 14px;
+  background: var(--blue2);
+  border-radius: 4px 4px 0 0;
+  transform: skewX(-20deg);
+}
+
+.iso-block::after {
+  content: '';
+  position: absolute;
+  right: -10px; top: 0; bottom: 0;
+  width: 10px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 0 4px 4px 0;
+}
+
+.iso-block.tall { height: 60px; }
+.iso-block.sm { width: 45px; height: 30px; }
+
+.hero-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.hero-cta {
+  background: white;
+  color: var(--blue);
+  border: none;
+  border-radius: 14px;
+  padding: 13px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  letter-spacing: 0.02em;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.hero-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.3); }
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.quick-card {
+  background: white;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-card:hover { transform: translateY(-2px); box-shadow: var(--shadow2); }
+.quick-card .qc-label { font-size: 0.78rem; font-weight: 700; color: var(--dark); }
+.quick-card .qc-val { font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--dark); }
+.quick-card .qc-val.blue { color: var(--blue); }
+.quick-card .qc-val.red { color: var(--danger); }
+.quick-card .qc-sub { font-size: 0.68rem; color: var(--grey); }
+
+.action-row {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px 12px;
+}
+
+/* ===========================
+   SCREEN: ACCIONS
+   =========================== */
+#s-accions .guide-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--dark);
+  padding: 20px 16px 4px;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.guide-card {
+  background: var(--blue);
+  border-radius: 18px;
+  padding: 20px 14px;
+  cursor: pointer;
+  transition: all 0.22s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(27,110,243,0.3);
+  min-height: 120px;
+  justify-content: center;
+}
+
+.guide-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(27,110,243,0.42); background: var(--blue2); }
+
+.guide-card .gc-icon {
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.guide-card .gc-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: white;
+  text-align: center;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Carousel dots */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 0 12px;
+}
+
+.dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(27,110,243,0.2); }
+.dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
+
+/* ===========================
+   SCREEN: TUTORIAL (Inventari)
+   =========================== */
+.zona-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 6px;
+}
+
+.zona-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.zona-settings {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--blue-bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+/* Tasques / pending tasks style */
+.task-section {
+  padding: 4px 0 0;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: rgba(232,58,58,0.03); }
+
+.task-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: rgba(232,58,58,0.08);
+}
+
+.task-info { flex: 1; min-width: 0; }
+.task-name { font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+.task-sub  { font-size: 0.68rem; color: var(--grey); margin-top: 2px; }
+
+.task-right { text-align: right; flex-shrink: 0; }
+.task-qty  { font-family: 'Nunito', sans-serif; font-size: 0.92rem; font-weight: 800; color: var(--danger); }
+.task-min  { font-size: 0.65rem; color: var(--grey); }
+.task-min span { color: var(--danger); }
+
+.task-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.task-btn:hover { background: var(--blue2); }
+
+/* Bottom two-btn row */
+.double-btn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 14px 4px;
+}
+
+/* ===========================
+   SCREEN: MAPA (4th tab)
+   =========================== */
+.map-container {
+  margin: 12px 14px;
+  background: white;
+  border-radius: var(--card-r);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.map-svg-area {
+  background: var(--blue-bg);
+  padding: 16px;
+  position: relative;
+}
+
+.warehouse-plan {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.map-grid-inner {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(4, 40px);
+  gap: 4px;
+}
+
+.mc {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mc:hover { transform: scale(1.05); }
+.mc-a { background: rgba(27,110,243,0.7); color: white; }
+.mc-b { background: rgba(27,110,243,0.45); color: white; }
+.mc-c { background: rgba(27,110,243,0.25); color: var(--dark); }
+.mc-d { background: rgba(0,180,120,0.3); color: var(--dark); }
+.mc-empty { background: rgba(0,0,0,0.04); }
+.mc-path { background: transparent; }
+.mc-selected { background: var(--blue); color: white; box-shadow: 0 0 0 2px white, 0 0 0 4px var(--blue); }
+
+.pending-list { padding: 6px 0; }
+
+.pending-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pending-row:last-child { border-bottom: none; }
+.pending-row:hover { background: rgba(27,110,243,0.03); }
+
+.pending-zone {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.pending-info { flex: 1; }
+.pending-name { font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+.pending-meta { font-size: 0.68rem; color: var(--grey); margin-top: 2px; }
+.pending-qty  { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--blue); }
+.pending-alert { color: var(--danger); }
+.pending-alert .pending-qty { color: var(--danger); }
+
+/* ===========================
+   SCREEN: RECEPCIO
+   =========================== */
+.recepcio-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--dark);
+  padding: 20px 16px 12px;
+}
+
+.scan-visual {
+  margin: 0 14px 12px;
+  background: linear-gradient(145deg, var(--blue-bg) 0%, rgba(27,110,243,0.06) 100%);
+  border: 2.5px dashed rgba(27,110,243,0.3);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.scan-visual:hover { border-color: var(--blue); background: rgba(27,110,243,0.07); }
+
+.scan-icon-wrap {
+  width: 80px; height: 80px;
+  border-radius: 24px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(27,110,243,0.4);
+  position: relative;
+}
+
+.scan-anim {
+  position: absolute;
+  left: 10px; right: 10px;
+  height: 2px;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 8px white;
+  animation: scanLine 2s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+@keyframes scanLine {
+  0%   { top: 20px; opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { top: 58px; opacity: 0; }
+}
+
+.scan-txt { font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 800; color: var(--blue); }
+.scan-sub { font-size: 0.7rem; color: var(--grey); }
+
+.detected-card {
+  margin: 0 14px 10px;
+  background: white;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detected-info { flex: 1; }
+.detected-name { font-size: 0.88rem; font-weight: 700; color: var(--dark); }
+.detected-meta { font-size: 0.7rem; color: var(--grey); margin-top: 2px; }
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(27,110,243,0.07);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.qty-btn {
+  width: 36px; height: 36px;
+  border: none;
+  background: var(--blue);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+
+.qty-btn:hover { background: var(--blue2); }
+.qty-val { flex: 1; text-align: center; font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--dark); }
+
+/* ===========================
+   SCREEN: ALERTES
+   =========================== */
+.alertes-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--dark);
+  padding: 16px 16px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.alert-card {
+  background: white;
+  border-radius: var(--card-r);
+  margin: 8px 14px 0;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.alert-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.alert-row:last-child { border-bottom: none; }
+.alert-row:hover { background: rgba(232,58,58,0.03); }
+
+.alert-icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  background: rgba(232,58,58,0.08);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-info { flex: 1; min-width: 0; }
+.alert-name { font-size: 0.84rem; font-weight: 700; color: var(--dark); }
+.alert-meta { font-size: 0.68rem; color: var(--grey); margin-top: 1px; }
+
+.alert-right { text-align: right; flex-shrink: 0; }
+.alert-stock { font-family: 'Nunito', sans-serif; font-size: 0.92rem; font-weight: 800; color: var(--dark); }
+.alert-min   { font-size: 0.65rem; font-weight: 700; color: var(--danger); margin-top: 1px; }
+.alert-min.warn { color: var(--warn); }
+
+.alert-status {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  margin-left: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--danger);
+}
+
+.alert-status.warn { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+
+.total-row {
+  padding: 10px 16px 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--grey);
+}
+
+.total-row strong { color: var(--dark); }
+
+.dbl-btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 14px;
+}
+
+/* Toast */
+.toast {
+  position: absolute;
+  bottom: 80px;
+  left: 14px; right: 14px;
+  background: rgba(29, 191, 115, 0.95);
+  border-radius: 14px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 700;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 6px 20px rgba(29,191,115,0.4);
+  animation: toastIn 0.3s ease;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .phone { width: 100vw; border-radius: 0; height: 100vh; }
+  .outer { padding: 0; }
+  .screen-tabs { display: none; }
+  .fab { right: 16px; }
+}
+
+/* ====================================================
+   RESPONSIVE FULLSCREEN — s'adapta a qualsevol pantalla
+   ==================================================== */
+
+/* Amaguem la UI de prototip (carcassa, tabs externs) */
+.proto-title,
+.screen-tabs {
+  display: none !important;
+}
+
+.outer {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+.phone-wrap {
+  width: 100% !important;
+  position: static !important;
+}
+
+/* El "phone" ara és simplement la pantalla de l'app */
+.phone {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Amaguem la dynamic island */
+.island {
+  display: none !important;
+}
+
+/* El header s'adapta */
+.app-header {
+  padding-top: 16px !important;
+}
+
+/* El contingut ocupa tot l'espai disponible */
+.app-content {
+  flex: 1 !important;
+}
+
+</style>
+</head>
+<body>
+
+<div class="outer">
+
+  <div class="proto-title">Prototipatge — CuiXA Easy Mode</div>
+
+  <!-- Screen selector -->
+  <div class="screen-tabs">
+    <button class="screen-tab active" onclick="switchScreen('inici', this)">Inici</button>
+    <button class="screen-tab" onclick="switchScreen('accions', this)">Accions</button>
+    <button class="screen-tab" onclick="switchScreen('inventari', this)">Inventari</button>
+    <button class="screen-tab" onclick="switchScreen('mapa', this)">Mapa</button>
+    <button class="screen-tab" onclick="switchScreen('recepcio', this)">Recepció</button>
+    <button class="screen-tab" onclick="switchScreen('alertes', this)">Alertes</button>
+  </div>
+
+  <!-- Phone -->
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="island"></div>
+
+      <!-- HEADER -->
+      <div class="app-header">
+        <div class="brand-row">
+          <div>
+            <div class="brand">Cui<em>XA</em></div>
+            <div class="brand-sub">Easy Mode</div>
+          </div>
+          <div class="header-actions">
+            <!-- Notification -->
+            <div class="hdr-btn" onclick="showToast('3 alertes d\'estoc actives')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <div class="badge-dot">3</div>
+            </div>
+            <!-- User -->
+            <div class="hdr-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top nav tabs -->
+        <div class="top-nav" id="topnav">
+          <button class="top-tab active" onclick="switchScreen('inici', null, this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Inici
+          </button>
+          <button class="top-tab" onclick="switchScreen('accions', null, this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Accions
+          </button>
+          <button class="top-tab" onclick="switchScreen('inventari', null, this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Tutorial
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="app-content">
+
+        <!-- ===== INICI ===== -->
+        <div class="screen active" id="s-inici">
+
+          <div class="hero-area">
+            <div class="hero-label">Mapa general del magatzem</div>
+            <!-- Isometric warehouse illustration (CSS) -->
+            <div class="warehouse-iso">
+              <div style="display:flex;gap:6px;align-items:flex-end;justify-content:center;flex-wrap:wrap;padding:8px 0;">
+                <!-- Floor grid of iso blocks -->
+                <div style="display:grid;grid-template-columns:repeat(4,50px);grid-template-rows:repeat(2,36px);gap:4px;">
+                  <div class="iso-block tall" style="width:50px;height:56px;"></div>
+                  <div class="iso-block" style="width:50px;height:36px;background:rgba(27,110,243,0.6)"></div>
+                  <div class="iso-block sm" style="width:50px;height:28px;background:rgba(43,127,255,0.8)"></div>
+                  <div class="iso-block" style="width:50px;height:36px;"></div>
+                  <div class="iso-block sm" style="width:50px;height:28px;background:rgba(27,110,243,0.5)"></div>
+                  <div class="iso-block tall" style="width:50px;height:48px;background:rgba(43,127,255,0.9)"></div>
+                  <div class="iso-block" style="width:50px;height:36px;background:rgba(27,110,243,0.65)"></div>
+                  <div class="iso-block sm" style="width:50px;height:24px;background:rgba(78,155,255,0.7)"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Big action row in hero -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+              <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:10px 12px;cursor:pointer;transition:all 0.2s;" onclick="switchScreen('recepcio')">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Recepció</div>
+                <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;">Accions de rebuda</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:10px 12px;cursor:pointer;transition:all 0.2s;" onclick="switchScreen('alertes')">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Alertes</div>
+                <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;">Gestionar estoc</div>
+              </div>
+            </div>
+
+            <button class="hero-cta" onclick="switchScreen('recepcio')">Recepcio Facil</button>
+          </div>
+
+          <!-- Quick stats -->
+          <div class="quick-grid">
+            <div class="quick-card">
+              <div class="icon-circle sm white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div class="qc-val blue">1,248</div>
+              <div class="qc-label">Estoc total</div>
+            </div>
+            <div class="quick-card">
+              <div class="icon-circle sm white" style="background:rgba(232,58,58,0.08);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2.5" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+              <div class="qc-val red">3</div>
+              <div class="qc-label">Alertes actives</div>
+            </div>
+            <div class="quick-card">
+              <div class="icon-circle sm white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><polyline points="16 16 12 20 8 16"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+              </div>
+              <div class="qc-val blue">7</div>
+              <div class="qc-label">Recepcions avui</div>
+            </div>
+            <div class="quick-card">
+              <div class="icon-circle sm white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </div>
+              <div class="qc-val blue">12</div>
+              <div class="qc-label">Tasques pendents</div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button class="btn-blue" onclick="switchScreen('recepcio')" style="font-size:0.8rem;padding:10px;">Nova ubicació</button>
+            <button class="btn-outline" onclick="switchScreen('inventari')" style="font-size:0.8rem;padding:10px;">Veure tutorial</button>
+          </div>
+        </div>
+
+        <!-- ===== ACCIONS (Guia Rapida) ===== -->
+        <div class="screen" id="s-accions">
+          <div class="section-card" style="margin-top:16px;">
+            <div class="section-card-inner">
+              <div class="guide-title" style="padding:0 0 12px;">Guia Rapida</div>
+
+              <div class="guide-grid">
+                <div class="guide-card" onclick="showToast('Escaneja un producte amb la camara')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <rect x="2" y="7" width="20" height="13" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                      <circle cx="12" cy="13" r="2"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Escanejar productes</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('recepcio')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <polyline points="16 16 12 20 8 16"/><line x1="12" y1="4" x2="12" y2="20"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Rebre usuaris</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('alertes')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Alertes de stock baix</div>
+                </div>
+
+                <div class="guide-card" onclick="showToast('Ajustos configurats correctament')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.07 4.93A10 10 0 0 1 21 12a10 10 0 0 1-1.93 7.07"/>
+                      <path d="M4.93 4.93A10 10 0 0 0 3 12a10 10 0 0 0 1.93 7.07"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Realitzar ajustos</div>
+                </div>
+              </div>
+
+              <!-- Carousel dots -->
+              <div class="dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+
+              <button class="btn-blue" onclick="showToast('Entesos! Continuem.')">Entes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== INVENTARI (Tutorial tab) ===== -->
+        <div class="screen" id="s-inventari">
+
+          <div class="search-bar" style="margin-top:14px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B8CADE" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Buscar producte...">
+          </div>
+
+          <!-- Zona A - stock normal -->
+          <div class="section-card">
+            <div class="zona-head">
+              <div class="zona-name">Zona A — Prioritat</div>
+              <div class="zona-settings">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+              </div>
+            </div>
+
+            <div class="product-row">
+              <div class="prod-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div class="prod-info">
+                <div class="prod-name">Producte X</div>
+                <div class="prod-meta">SKU-12045</div>
+              </div>
+              <div class="prod-right">
+                <div class="prod-qty">155.60 Uds.</div>
+                <div class="prod-zone">Zona B</div>
+              </div>
+            </div>
+
+            <div class="product-row">
+              <div class="prod-icon" style="background:rgba(29,191,115,0.08);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="prod-info">
+                <div class="prod-name">Producte Y</div>
+                <div class="prod-meta">SKU-47799</div>
+              </div>
+              <div class="prod-right">
+                <div class="prod-qty">125 550 Uds.</div>
+                <div class="prod-zone">Zona B</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tasques pendents -->
+          <div class="section-card">
+            <div class="section-head">
+              <h3>Tasques pendents</h3>
+              <a class="see-all">Veure tot</a>
+            </div>
+
+            <div class="task-section">
+              <div class="task-row">
+                <div class="task-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div class="task-info">
+                  <div class="task-name">Producte Y</div>
+                  <div class="task-sub">MP-001</div>
+                </div>
+                <div class="task-right">
+                  <div class="task-qty">153 50s T80</div>
+                  <div class="task-min">Min: <span>20 Uds</span></div>
+                </div>
+                <button class="task-btn">Reabastir</button>
+              </div>
+
+              <div class="task-row">
+                <div class="task-icon" style="background:rgba(245,155,0,0.08);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                </div>
+                <div class="task-info">
+                  <div class="task-name">Snolotes B</div>
+                  <div class="task-sub">SKU-0092</div>
+                </div>
+                <div class="task-right">
+                  <div class="task-qty" style="color:var(--warn);">550 Uds.</div>
+                  <div class="task-min" style="color:transparent;">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-btn">
+            <button class="btn-blue" onclick="showToast('Canvi d\'ubicacio iniciat')" style="font-size:0.78rem;padding:10px;">Nova ubicacio</button>
+            <button class="btn-outline" onclick="showToast('Obrint tutorial...')" style="font-size:0.78rem;padding:10px;">Veure tutorial</button>
+          </div>
+        </div>
+
+        <!-- ===== MAPA ===== -->
+        <div class="screen" id="s-mapa">
+
+          <div class="search-bar" style="margin-top:14px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B8CADE" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Busca producte...">
+          </div>
+
+          <!-- Map -->
+          <div class="map-container">
+            <div class="map-svg-area">
+              <div class="map-grid-inner">
+                <div class="mc mc-a">A1</div>
+                <div class="mc mc-a">A2</div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-b">B1</div>
+                <div class="mc mc-b">B2</div>
+                <div class="mc mc-b">B3</div>
+
+                <div class="mc mc-a">A3</div>
+                <div class="mc mc-a">A4</div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-b mc-selected">B4</div>
+                <div class="mc mc-empty"></div>
+                <div class="mc mc-empty"></div>
+
+                <div class="mc mc-c">C1</div>
+                <div class="mc mc-c">C2</div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-d">D1</div>
+                <div class="mc mc-d">D2</div>
+                <div class="mc mc-empty"></div>
+
+                <div class="mc mc-c">C3</div>
+                <div class="mc mc-empty"></div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-d">D3</div>
+                <div class="mc mc-d">D4</div>
+                <div class="mc mc-empty"></div>
+              </div>
+            </div>
+
+            <!-- Map legend inside card -->
+            <div style="display:flex;gap:8px;padding:10px 14px;flex-wrap:wrap;border-bottom:1px solid rgba(0,0,0,0.05);">
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);">
+                <div style="width:10px;height:10px;border-radius:3px;background:rgba(27,110,243,0.7);"></div>Zona A
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);">
+                <div style="width:10px;height:10px;border-radius:3px;background:rgba(27,110,243,0.45);"></div>Zona B
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);">
+                <div style="width:10px;height:10px;border-radius:3px;background:rgba(27,110,243,0.25);"></div>Zona C
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);">
+                <div style="width:10px;height:10px;border-radius:3px;background:rgba(0,180,120,0.3);"></div>Zona D
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--blue);font-weight:700;">
+                <div style="width:10px;height:10px;border-radius:3px;background:var(--blue);box-shadow:0 0 6px rgba(27,110,243,0.5);"></div>Localitzat
+              </div>
+            </div>
+
+            <!-- Tasques pendents en mapa -->
+            <div class="section-head">
+              <h3>Tasques pendents</h3>
+            </div>
+
+            <div class="pending-list">
+              <div class="pending-row pending-alert">
+                <div class="task-icon" style="width:36px;height:36px;border-radius:10px;background:rgba(232,58,58,0.08);display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div class="pending-info">
+                  <div class="pending-name" style="color:var(--dark);">Posicio Isostore</div>
+                  <div class="pending-meta">Proveiment · Pedido #2223301</div>
+                </div>
+                <button class="task-btn">Reabastir</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pedidos pendents -->
+          <div class="section-card">
+            <div class="section-head">
+              <h3>Pedidos pendents</h3>
+            </div>
+
+            <div class="pending-list">
+              <div class="pending-row">
+                <div class="pending-zone">P1</div>
+                <div class="pending-info">
+                  <div class="pending-name">Pasillo 1 · Estante 3</div>
+                  <div class="pending-meta">Proveedor 2 · Pedido #22100</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="pending-qty">120 Uds</div>
+                  <div style="font-size:0.65rem;color:var(--danger);font-weight:700;">Min: 20 Ud. 2</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-blue" onclick="showToast('Escaneig iniciat')" style="font-size:0.75rem;padding:10px;">Escanejar Warehouse</button>
+            <button class="btn-outline" onclick="showToast('Obrint tutorial')" style="font-size:0.75rem;padding:10px;">Veure tutorial</button>
+          </div>
+        </div>
+
+        <!-- ===== RECEPCIO ===== -->
+        <div class="screen" id="s-recepcio">
+
+          <div class="section-card" style="margin-top:16px;">
+            <div class="section-card-inner">
+              <div class="recepcio-title" style="padding:0 0 12px;">Recepcio Facil</div>
+
+              <!-- Scan area -->
+              <div class="scan-visual" onclick="showToast('Camera activa. Apunta al codi de barres.')">
+                <!-- Small warehouse illustration -->
+                <div style="display:flex;gap:4px;align-items:flex-end;margin-bottom:4px;">
+                  <div class="iso-block" style="width:40px;height:30px;background:rgba(27,110,243,0.7);border-radius:6px;position:relative;">
+                    <div style="position:absolute;top:-10px;left:0;right:0;height:10px;background:rgba(27,110,243,0.5);border-radius:3px 3px 0 0;"></div>
+                  </div>
+                  <div class="iso-block" style="width:55px;height:42px;background:var(--blue);border-radius:6px;position:relative;">
+                    <div style="position:absolute;top:-12px;left:0;right:0;height:12px;background:rgba(43,127,255,0.8);border-radius:3px 3px 0 0;"></div>
+                  </div>
+                  <div class="iso-block" style="width:40px;height:28px;background:rgba(27,110,243,0.6);border-radius:6px;position:relative;">
+                    <div style="position:absolute;top:-9px;left:0;right:0;height:9px;background:rgba(27,110,243,0.45);border-radius:3px 3px 0 0;"></div>
+                  </div>
+                </div>
+                <!-- Red arrow indicator -->
+                <div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid #E83A3A;filter:drop-shadow(0 2px 4px rgba(232,58,58,0.4));"></div>
+
+                <div class="scan-txt">Toca per escanejar</div>
+                <div class="scan-sub">Apunta la camera al codi de barres</div>
+              </div>
+
+              <!-- Detected product -->
+              <div style="margin-bottom:10px;">
+                <div style="font-size:0.7rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Producte detectat: Tramites</div>
+
+                <div class="detected-card" style="margin:0 0 8px;">
+                  <div class="prod-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  </div>
+                  <div class="detected-info">
+                    <div class="detected-name">Caixa (50p x 70g)</div>
+                    <div class="detected-meta">SKU-00234</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div class="qty-row">
+                      <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                      <div class="qty-val" id="qty-v">1</div>
+                      <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pending orders -->
+              <div style="font-size:0.7rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Pedidos pendents...</div>
+
+              <div style="background:var(--blue-bg);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <div class="prod-icon" style="background:rgba(27,110,243,0.15);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:0.82rem;font-weight:600;color:var(--dark);">Paulia 1 · Eruata 3</div>
+                  <div style="font-size:0.67rem;color:var(--grey);">Proveeor 2 · Pedido #22100</div>
+                </div>
+                <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;color:var(--blue);">100S</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-blue" onclick="showToast('Nova ubicacio assignada!')" style="font-size:0.75rem;padding:11px;">Nova ubicacio</button>
+            <button class="btn-outline" onclick="showToast('Obrint detalls del producte')" style="font-size:0.75rem;padding:11px;">Veure detalls</button>
+          </div>
+        </div>
+
+        <!-- ===== ALERTES ===== -->
+        <div class="screen" id="s-alertes">
+
+          <div class="alert-card" style="margin-top:16px;">
+            <div class="alertes-title">Alertes de stock baix</div>
+
+            <div class="alert-row">
+              <div class="alert-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="alert-info">
+                <div class="alert-name">Producte Z</div>
+                <div class="alert-meta">SKU-47783</div>
+              </div>
+              <div class="alert-right">
+                <div class="alert-stock">150 Uds</div>
+                <div class="alert-min">Min: 20 Uds</div>
+              </div>
+              <div class="alert-status"></div>
+            </div>
+
+            <div class="alert-row">
+              <div class="alert-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="alert-info">
+                <div class="alert-name">Materia Prima A</div>
+                <div class="alert-meta">MP-001</div>
+              </div>
+              <div class="alert-right">
+                <div class="alert-stock" style="color:var(--danger);">15 50 Uds.</div>
+                <div class="alert-min">Min A: ZONA C</div>
+              </div>
+              <div class="alert-status"></div>
+            </div>
+
+            <div class="alert-row">
+              <div class="alert-icon" style="background:rgba(245,155,0,0.08);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="alert-info">
+                <div class="alert-name">Materia Prima A</div>
+                <div class="alert-meta">MP-S93</div>
+              </div>
+              <div class="alert-right">
+                <div class="alert-stock">130 Uds</div>
+                <div class="alert-min warn">Min: 20 Ud. S</div>
+              </div>
+              <div class="alert-status warn"></div>
+            </div>
+
+            <div class="alert-row">
+              <div class="alert-icon" style="background:rgba(27,110,243,0.08);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div class="alert-info">
+                <div class="alert-name">Rack B · Nivel 2</div>
+                <div class="alert-meta">YAB-3106.1</div>
+              </div>
+              <div class="alert-right">
+                <div class="alert-stock">45 Uds</div>
+                <div class="alert-min">ZONA 4, ZONA C</div>
+              </div>
+              <div class="alert-status" style="background:var(--ok);box-shadow:0 0 6px var(--ok);"></div>
+            </div>
+
+            <div class="total-row">Total d'alertes: <strong>3</strong></div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-blue" onclick="showToast('Ordre de compra generada!')" style="font-size:0.72rem;padding:11px;">Acimiliar ordre de compra</button>
+            <button class="btn-outline" onclick="switchScreen('mapa')" style="font-size:0.72rem;padding:11px;">Generar ubicacio</button>
+          </div>
+
+          <!-- Extra action -->
+          <div style="padding:0 14px 14px;">
+            <button class="btn-outline" style="font-size:0.75rem;" onclick="showToast('Obrint tutorial complert')">Veure tutorial</button>
+          </div>
+        </div>
+
+      </div>
+      <!-- /app-content -->
+
+      <!-- BOTTOM NAV -->
+      <nav class="bottom-nav">
+        <div class="bnav-item active" id="bn-inici" onclick="switchScreen('inici'); setBnav('inici')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4E9BFF" stroke-width="2.5" stroke-linecap="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>Inici</span>
+        </div>
+        <div class="bnav-item" id="bn-cerca" onclick="switchScreen('inventari'); setBnav('cerca')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span>Buscar</span>
+        </div>
+        <div class="bnav-item" id="bn-config" onclick="showToast('Configuració de l\'aplicació'); setBnav('config')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/>
+          </svg>
+          <span>Ajustos</span>
+        </div>
+      </nav>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+
+    </div><!-- /phone -->
+  </div><!-- /phone-wrap -->
+
+</div><!-- /outer -->
+
+<script>
+let qty = 1;
+
+function switchScreen(name, tabBtn, topTabBtn) {
+  // Hide all
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  // Show
+  const el = document.getElementById('s-' + name);
+  if (el) { el.classList.add('active'); document.querySelector('.app-content').scrollTop = 0; }
+
+  // Update outer tabs
+  if (tabBtn) {
+    document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+    tabBtn.classList.add('active');
+  }
+
+  // Update top nav tabs
+  if (topTabBtn) {
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    topTabBtn.classList.add('active');
+  }
+
+  // Sync bottom nav
+  const mapToBnav = { inici:'inici', inventari:'cerca', mapa:'cerca', recepcio:'inici', alertes:'inici', accions:'inici' };
+  setBnav(mapToBnav[name] || 'inici');
+}
+
+function setBnav(name) {
+  document.querySelectorAll('.bnav-item').forEach(n => {
+    n.classList.remove('active');
+    const svg = n.querySelector('svg');
+    if (svg) svg.setAttribute('stroke', 'rgba(255,255,255,0.4)');
+    const sp = n.querySelector('span');
+    if (sp) sp.style.color = '';
+  });
+  const el = document.getElementById('bn-' + name);
+  if (el) {
+    el.classList.add('active');
+    const svg = el.querySelector('svg');
+    if (svg) svg.setAttribute('stroke', '#4E9BFF');
+    const sp = el.querySelector('span');
+    if (sp) sp.style.color = '#4E9BFF';
+  }
+}
+
+function changeQty(d) {
+  qty = Math.max(1, qty + d);
+  document.getElementById('qty-v').textContent = qty;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._t);
+  window._t = setTimeout(() => t.style.display = 'none', 2600);
+}
+
+// Sync outer tabs with top tabs
+document.querySelectorAll('.screen-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.screen-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Filter chips
+document.querySelectorAll('.filter-chip').forEach(c => {
+  c.addEventListener('click', function() {
+    document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
