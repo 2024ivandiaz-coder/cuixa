@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CuiXA Easy Mode</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #071A3E;
+  --navy2:   #0A2150;
+  --navy3:   #0D2860;
+  --blue:    #1B6EF3;
+  --blue2:   #2B7FFF;
+  --blue-lt: #4E9BFF;
+  --blue-bg: #EEF4FF;
+  --white:   #FFFFFF;
+  --offwhite:#F7F9FF;
+  --grey:    #8FA3C0;
+  --grey2:   #B8CADE;
+  --dark:    #1A2F50;
+  --danger:  #E83A3A;
+  --warn:    #F59B00;
+  --ok:      #1DBF73;
+  --card-r:  20px;
+  --shadow:  0 4px 24px rgba(7,26,62,0.18);
+  --shadow2: 0 8px 32px rgba(7,26,62,0.28);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+html, body { width: 100%; height: 100%; }
+
+body {
+  background: radial-gradient(ellipse 110% 80% at 50% 30%, #0e2a6e 0%, #071A3E 60%, #040e22 100%);
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 8%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 70%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.outer { display: block; width: 100%; max-width: 100%; padding: 0; }
+.phone-wrap { width: 100%; }
+.phone {
+  width: 100vw; height: 100vh; height: 100dvh;
+  background: var(--navy);
+  border-radius: 0; border: none; box-shadow: none;
+  overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
+}
+.island { display: none; }
+
+/* ===========================  HEADER  =========================== */
+.app-header {
+  background: var(--navy2);
+  padding: 16px 20px 0;
+  flex-shrink: 0;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.brand { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.5rem; color: white; letter-spacing: -0.02em; }
+.brand em { font-style: normal; color: var(--blue-lt); }
+.brand-sub { font-family: 'Nunito', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 1px; }
+
+.header-actions { display: flex; gap: 8px; }
+
+.hdr-btn {
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative; transition: all 0.2s;
+}
+.hdr-btn:hover { background: rgba(255,255,255,0.14); }
+
+.badge-dot {
+  position: absolute; top: -3px; right: -3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--danger); font-size: 0.55rem; font-weight: 800;
+  color: white; display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--navy2);
+}
+
+.top-nav { display: flex; gap: 4px; padding-bottom: 0; }
+.top-tab {
+  padding: 8px 14px; border-radius: 12px 12px 0 0;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  cursor: pointer; transition: all 0.2s; border: none; background: none;
+  font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 5px;
+}
+.top-tab svg { opacity: 0.5; }
+.top-tab.active { color: white; background: rgba(255,255,255,0.08); }
+.top-tab.active svg { opacity: 1; }
+.top-tab:hover:not(.active) { color: rgba(255,255,255,0.7); }
+
+/* ===========================  CONTENT  =========================== */
+.app-content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none; background: var(--offwhite);
+}
+.app-content::-webkit-scrollbar { display: none; }
+
+/* ===========================  BOTTOM NAV  =========================== */
+.bottom-nav {
+  background: var(--navy2);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 10px 0 22px; flex-shrink: 0;
+}
+.bnav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; padding: 4px 20px; border-radius: 12px; transition: all 0.2s;
+}
+.bnav-item span { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.35); transition: color 0.2s; }
+.bnav-item svg { opacity: 0.3; transition: opacity 0.2s; }
+.bnav-item.active svg { opacity: 1; }
+.bnav-item.active span { color: var(--blue-lt); }
+.bnav-item:hover { background: rgba(255,255,255,0.05); }
+
+/* ===========================  SCREENS  =========================== */
+.screen { display: none; padding-bottom: 20px; }
+.screen.active { display: block; animation: fadeSlide 0.28s ease; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================  SHARED  =========================== */
+.section-card { background: white; border-radius: var(--card-r); margin: 12px 14px; box-shadow: var(--shadow); overflow: hidden; }
+.section-card-inner { padding: 16px; }
+.section-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+.section-head h3 { font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 800; color: var(--dark); letter-spacing: 0.04em; text-transform: uppercase; }
+.see-all { font-size: 0.7rem; color: var(--blue); font-weight: 600; cursor: pointer; }
+
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,0,0,0.04); border: 1.5px solid rgba(0,0,0,0.07);
+  border-radius: 12px; padding: 10px 14px; margin: 12px 14px 0; transition: border-color 0.2s;
+}
+.search-bar:focus-within { border-color: var(--blue); background: white; }
+.search-bar input { background: none; border: none; outline: none; font-size: 0.85rem; color: var(--dark); flex: 1; font-family: 'Inter', sans-serif; }
+.search-bar input::placeholder { color: var(--grey2); }
+
+.chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 100px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; }
+.chip-blue { background: var(--blue); color: white; }
+.chip-outline { background: transparent; color: var(--blue); border-color: rgba(27,110,243,0.3); }
+.chip-outline:hover { background: var(--blue-bg); }
+
+.icon-circle { width: 52px; height: 52px; border-radius: 16px; background: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+.icon-circle.white { background: rgba(27,110,243,0.08); }
+.icon-circle.sm { width: 38px; height: 38px; border-radius: 12px; }
+
+.product-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: background 0.15s; }
+.product-row:last-child { border-bottom: none; }
+.product-row:hover { background: rgba(27,110,243,0.03); }
+.prod-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.prod-info { flex: 1; min-width: 0; }
+.prod-name { font-size: 0.85rem; font-weight: 600; color: var(--dark); }
+.prod-meta { font-size: 0.7rem; color: var(--grey); margin-top: 2px; }
+.prod-right { text-align: right; flex-shrink: 0; }
+.prod-qty { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--dark); }
+.prod-zone { font-size: 0.68rem; color: var(--blue); font-weight: 600; margin-top: 1px; }
+
+.btn-blue { background: var(--blue); color: white; border: none; border-radius: 12px; padding: 12px 16px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.03em; cursor: pointer; transition: all 0.22s; text-align: center; width: 100%; box-shadow: 0 4px 16px rgba(27,110,243,0.35); }
+.btn-blue:hover { background: var(--blue2); transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--blue); border: 2px solid rgba(27,110,243,0.35); border-radius: 12px; padding: 10px 16px; font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 800; cursor: pointer; transition: all 0.2s; text-align: center; width: 100%; }
+.btn-outline:hover { background: var(--blue-bg); border-color: var(--blue); }
+
+.divider-label { padding: 10px 14px 4px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); }
+
+.quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 14px; }
+.quick-card { background: white; border-radius: 16px; padding: 14px; box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 8px; }
+.quick-card:hover { transform: translateY(-2px); box-shadow: var(--shadow2); }
+.quick-card .qc-label { font-size: 0.78rem; font-weight: 700; color: var(--dark); }
+.quick-card .qc-val { font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--dark); }
+.quick-card .qc-val.blue { color: var(--blue); }
+.quick-card .qc-val.red { color: var(--danger); }
+.quick-card .qc-sub { font-size: 0.68rem; color: var(--grey); }
+
+.action-row { display: flex; gap: 8px; padding: 0 14px 12px; }
+.dbl-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 14px; }
+.double-btn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 14px 4px; }
+
+/* Task rows */
+.task-section { padding: 4px 0 0; }
+.task-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; transition: background 0.15s; }
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: rgba(232,58,58,0.03); }
+.task-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(232,58,58,0.08); }
+.task-info { flex: 1; min-width: 0; }
+.task-name { font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+.task-sub  { font-size: 0.68rem; color: var(--grey); margin-top: 2px; }
+.task-right { text-align: right; flex-shrink: 0; }
+.task-qty  { font-family: 'Nunito', sans-serif; font-size: 0.92rem; font-weight: 800; color: var(--danger); }
+.task-min  { font-size: 0.65rem; color: var(--grey); }
+.task-min span { color: var(--danger); }
+.task-btn { background: var(--blue); color: white; border: none; border-radius: 8px; padding: 5px 10px; font-family: 'Nunito', sans-serif; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.task-btn:hover { background: var(--blue2); }
+
+/* Hero */
+#s-inici .hero-area { background: linear-gradient(160deg, var(--navy2) 0%, var(--navy3) 100%); padding: 20px 20px 28px; position: relative; overflow: hidden; }
+#s-inici .hero-area::after { content: ''; position: absolute; right: -20px; top: -20px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(27,110,243,0.25) 0%, transparent 70%); }
+.iso-block { border-radius: 6px; position: relative; opacity: 0.85; }
+.hero-cta { background: white; color: var(--blue); border: none; border-radius: 14px; padding: 13px; font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; cursor: pointer; width: 100%; transition: all 0.2s; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.hero-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.3); }
+.hero-label { font-family: 'Nunito', sans-serif; font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; margin-bottom: 6px; }
+
+/* Guide grid */
+.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 14px; }
+.guide-card { background: var(--blue); border-radius: 18px; padding: 20px 14px; cursor: pointer; transition: all 0.22s; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 6px 20px rgba(27,110,243,0.3); min-height: 120px; justify-content: center; }
+.guide-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(27,110,243,0.42); background: var(--blue2); }
+.guide-card .gc-icon { width: 52px; height: 52px; border-radius: 16px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; }
+.guide-card .gc-label { font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; color: white; text-align: center; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Map */
+.map-container { margin: 12px 14px; background: white; border-radius: var(--card-r); box-shadow: var(--shadow); overflow: hidden; }
+.map-svg-area { background: var(--blue-bg); padding: 16px; position: relative; }
+.map-grid-inner { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 40px); gap: 4px; }
+.mc { border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+.mc:hover { transform: scale(1.05); }
+.mc-a { background: rgba(27,110,243,0.7); color: white; }
+.mc-b { background: rgba(27,110,243,0.45); color: white; }
+.mc-c { background: rgba(27,110,243,0.25); color: var(--dark); }
+.mc-d { background: rgba(0,180,120,0.3); color: var(--dark); }
+.mc-empty { background: rgba(0,0,0,0.04); }
+.mc-path { background: transparent; }
+.mc-selected { background: var(--blue); color: white; box-shadow: 0 0 0 2px white, 0 0 0 4px var(--blue); }
+
+/* Recepcio */
+.scan-visual { margin: 0 0 12px; background: linear-gradient(145deg, var(--blue-bg) 0%, rgba(27,110,243,0.06) 100%); border: 2.5px dashed rgba(27,110,243,0.3); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 14px; cursor: pointer; transition: all 0.25s; }
+.scan-visual:hover { border-color: var(--blue); background: rgba(27,110,243,0.07); }
+.scan-txt { font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 800; color: var(--blue); }
+.scan-sub { font-size: 0.7rem; color: var(--grey); }
+@keyframes scanLine {
+  0%   { top: 20px; opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { top: 58px; opacity: 0; }
+}
+.scan-anim { position: absolute; left: 10px; right: 10px; height: 2px; background: rgba(255,255,255,0.8); box-shadow: 0 0 8px white; animation: scanLine 2s ease-in-out infinite; border-radius: 2px; }
+
+.detected-card { background: white; border-radius: 16px; padding: 14px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.detected-info { flex: 1; }
+.detected-name { font-size: 0.88rem; font-weight: 700; color: var(--dark); }
+.detected-meta { font-size: 0.7rem; color: var(--grey); margin-top: 2px; }
+.qty-row { display: flex; align-items: center; gap: 0; background: rgba(27,110,243,0.07); border-radius: 10px; overflow: hidden; }
+.qty-btn { width: 36px; height: 36px; border: none; background: var(--blue); color: white; font-size: 1.2rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.qty-btn:hover { background: var(--blue2); }
+.qty-val { flex: 1; text-align: center; font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--dark); min-width: 32px; }
+
+/* Alertes */
+.alert-card { background: white; border-radius: var(--card-r); margin: 8px 14px 0; box-shadow: var(--shadow); overflow: hidden; }
+.alert-row { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: background 0.15s; }
+.alert-row:last-child { border-bottom: none; }
+.alert-row:hover { background: rgba(232,58,58,0.03); }
+.alert-icon { width: 38px; height: 38px; border-radius: 11px; background: rgba(232,58,58,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.alert-info { flex: 1; min-width: 0; }
+.alert-name { font-size: 0.84rem; font-weight: 700; color: var(--dark); }
+.alert-meta { font-size: 0.68rem; color: var(--grey); margin-top: 1px; }
+.alert-right { text-align: right; flex-shrink: 0; }
+.alert-stock { font-family: 'Nunito', sans-serif; font-size: 0.92rem; font-weight: 800; color: var(--dark); }
+.alert-min { font-size: 0.65rem; font-weight: 700; color: var(--danger); margin-top: 1px; }
+.alert-min.warn { color: var(--warn); }
+.alert-status { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); margin-left: 8px; flex-shrink: 0; box-shadow: 0 0 6px var(--danger); }
+.alert-status.warn { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+.total-row { padding: 10px 16px 6px; font-size: 0.78rem; font-weight: 600; color: var(--grey); }
+.total-row strong { color: var(--dark); }
+.alertes-title { font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--dark); padding: 16px 16px 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* Pending rows */
+.pending-list { padding: 6px 0; }
+.pending-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; transition: background 0.15s; }
+.pending-row:last-child { border-bottom: none; }
+.pending-row:hover { background: rgba(27,110,243,0.03); }
+.pending-zone { width: 36px; height: 36px; border-radius: 10px; background: var(--blue); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 800; color: white; flex-shrink: 0; }
+.pending-info { flex: 1; }
+.pending-name { font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+.pending-meta { font-size: 0.68rem; color: var(--grey); margin-top: 2px; }
+.pending-qty  { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--blue); }
+.dots { display: flex; justify-content: center; gap: 5px; padding: 4px 0 12px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(27,110,243,0.2); }
+.dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
+
+/* ===========================
+   ZONA HEAD
+   =========================== */
+.zona-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 6px; }
+.zona-name { font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 800; color: var(--dark); letter-spacing: 0.06em; text-transform: uppercase; }
+.zona-settings { width: 28px; height: 28px; border-radius: 8px; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+/* ===========================
+   TOAST
+   =========================== */
+.toast {
+  position: absolute; bottom: 80px; left: 14px; right: 14px;
+  background: rgba(29, 191, 115, 0.95); border-radius: 14px;
+  padding: 12px 16px; color: white; font-size: 0.82rem; font-weight: 700;
+  z-index: 200; display: none; box-shadow: 0 6px 20px rgba(29,191,115,0.4);
+}
+
+/* ===========================
+   MODAL OVERLAY
+   =========================== */
+.modal-overlay {
+  position: absolute; inset: 0; background: rgba(4,14,34,0.88);
+  z-index: 300; display: flex; align-items: center; justify-content: center;
+  padding: 24px; animation: fadeSlide 0.25s ease;
+}
+.modal-box {
+  background: white; border-radius: 24px; padding: 28px 24px;
+  width: 100%; max-width: 340px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-box h2 { font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--dark); margin-bottom: 8px; }
+.modal-box p { font-size: 0.78rem; color: var(--grey); margin-bottom: 20px; line-height: 1.5; }
+.modal-close { background: var(--blue); color: white; border: none; border-radius: 12px; padding: 11px 24px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 800; cursor: pointer; width: 100%; transition: all 0.2s; }
+.modal-close:hover { background: var(--blue2); }
+
+/* Under construction emoji area */
+.construction-art {
+  font-size: 4rem; margin: 0 0 12px;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ===========================
+   ESTOC TOTAL SCREEN
+   =========================== */
+.estoc-hero {
+  background: linear-gradient(160deg, var(--navy2) 0%, var(--navy3) 100%);
+  padding: 24px 20px 20px; margin-bottom: 0;
+}
+.estoc-hero-title { font-family: 'Nunito', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 4px; }
+.estoc-big { font-family: 'Nunito', sans-serif; font-size: 3rem; font-weight: 900; color: white; line-height: 1; }
+.estoc-big span { font-size: 1rem; font-weight: 600; color: var(--blue-lt); margin-left: 6px; }
+
+.estoc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 14px; }
+.estoc-mini { background: white; border-radius: 14px; padding: 12px; box-shadow: var(--shadow); text-align: center; }
+.estoc-mini .em-val { font-family: 'Nunito', sans-serif; font-size: 1.2rem; font-weight: 900; color: var(--dark); }
+.estoc-mini .em-val.blue { color: var(--blue); }
+.estoc-mini .em-val.green { color: var(--ok); }
+.estoc-mini .em-val.red { color: var(--danger); }
+.estoc-mini .em-label { font-size: 0.6rem; font-weight: 700; color: var(--grey); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+
+.bar-container { margin: 0 14px 12px; background: white; border-radius: var(--card-r); box-shadow: var(--shadow); padding: 16px; }
+.bar-title { font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; color: var(--dark); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.bar-row { margin-bottom: 10px; }
+.bar-label-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.bar-name { font-size: 0.72rem; font-weight: 600; color: var(--dark); }
+.bar-num  { font-family: 'Nunito', sans-serif; font-size: 0.72rem; font-weight: 800; color: var(--blue); }
+.bar-track { background: var(--blue-bg); border-radius: 6px; height: 8px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 6px; background: var(--blue); transition: width 0.6s ease; }
+.bar-fill.warn { background: var(--warn); }
+.bar-fill.danger { background: var(--danger); }
+
+/* ===========================
+   TASQUES PENDENTS SCREEN
+   =========================== */
+.tp-header { background: linear-gradient(160deg, var(--navy2) 0%, var(--navy3) 100%); padding: 20px 20px 16px; }
+.tp-title { font-family: 'Nunito', sans-serif; font-size: 1.3rem; font-weight: 900; color: white; margin-bottom: 4px; }
+.tp-subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+
+.priority-tabs { display: flex; gap: 6px; padding: 12px 14px 4px; overflow-x: auto; scrollbar-width: none; }
+.priority-tabs::-webkit-scrollbar { display: none; }
+.p-tab { padding: 5px 14px; border-radius: 100px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; white-space: nowrap; border: 1.5px solid rgba(27,110,243,0.25); background: white; color: var(--blue); transition: all 0.2s; }
+.p-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+.tp-card { background: white; border-radius: var(--card-r); margin: 8px 14px; box-shadow: var(--shadow); overflow: hidden; }
+.tp-row { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: background 0.15s; }
+.tp-row:last-child { border-bottom: none; }
+.tp-row:hover { background: rgba(27,110,243,0.03); }
+.tp-prio { width: 4px; height: 36px; border-radius: 3px; flex-shrink: 0; }
+.tp-prio.urgent { background: var(--danger); }
+.tp-prio.medium { background: var(--warn); }
+.tp-prio.normal { background: var(--ok); }
+.tp-ico { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tp-info { flex: 1; min-width: 0; }
+.tp-name { font-size: 0.83rem; font-weight: 700; color: var(--dark); }
+.tp-meta { font-size: 0.68rem; color: var(--grey); margin-top: 2px; }
+.tp-right { text-align: right; flex-shrink: 0; }
+.tp-qty { font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 800; }
+.tp-due { font-size: 0.63rem; color: var(--grey); margin-top: 2px; }
+.tp-action-btn { background: var(--blue); color: white; border: none; border-radius: 8px; padding: 5px 10px; font-family: 'Nunito', sans-serif; font-size: 0.63rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
+
+.tp-empty { text-align: center; padding: 32px 20px; color: var(--grey); font-size: 0.82rem; }
+.tp-empty div { font-size: 2.5rem; margin-bottom: 10px; }
+
+/* ===========================
+   SCAN MANUAL (escaneig manual)
+   =========================== */
+.scan-manual-box {
+  background: var(--blue-bg);
+  border: 1.5px solid rgba(27,110,243,0.2);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.scan-manual-title { font-family: 'Nunito', sans-serif; font-size: 0.72rem; font-weight: 800; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.scan-input-row { display: flex; gap: 8px; align-items: center; }
+.scan-input { flex: 1; background: white; border: 1.5px solid rgba(27,110,243,0.2); border-radius: 10px; padding: 10px 14px; font-size: 0.85rem; font-family: 'Inter', sans-serif; color: var(--dark); outline: none; transition: border-color 0.2s; }
+.scan-input:focus { border-color: var(--blue); }
+.scan-input::placeholder { color: var(--grey2); }
+.scan-go { background: var(--blue); color: white; border: none; border-radius: 10px; padding: 10px 16px; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.scan-go:hover { background: var(--blue2); }
+
+.scan-result {
+  background: white; border-radius: 14px; padding: 14px;
+  display: flex; align-items: center; gap: 12px;
+  border-left: 4px solid var(--ok); margin-top: 10px;
+  animation: fadeSlide 0.25s ease;
+}
+.scan-result-info { flex: 1; }
+.scan-result-name { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+.scan-result-meta { font-size: 0.7rem; color: var(--grey); margin-top: 2px; }
+.scan-result-ok { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--ok); }
+
+/* Confirm received button */
+.btn-green { background: var(--ok); color: white; border: none; border-radius: 12px; padding: 12px 16px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: all 0.2s; text-align: center; width: 100%; box-shadow: 0 4px 16px rgba(29,191,115,0.3); }
+.btn-green:hover { background: #18a562; transform: translateY(-1px); }
+
+/* Receive history */
+.recv-history { background: rgba(29,191,115,0.07); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
+.recv-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(29,191,115,0.1); font-size: 0.72rem; color: var(--dark); }
+.recv-item:last-child { border-bottom: none; }
+.recv-item .ri-name { flex: 1; font-weight: 600; }
+.recv-item .ri-qty { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--ok); }
+.recv-item .ri-time { color: var(--grey); font-size: 0.65rem; }
+
+</style>
+</head>
+<body>
+
+<div class="outer">
+  <div class="phone-wrap">
+    <div class="phone">
+
+      <!-- HEADER -->
+      <div class="app-header">
+        <div class="brand-row">
+          <div>
+            <div class="brand">Cui<em>XA</em></div>
+            <div class="brand-sub">Easy Mode</div>
+          </div>
+          <div class="header-actions">
+            <div class="hdr-btn" onclick="openModal('construccio')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <div class="badge-dot" id="notif-badge">3</div>
+            </div>
+            <div class="hdr-btn" onclick="openModal('perfil')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="top-nav" id="topnav">
+          <button class="top-tab active" onclick="switchScreen('inici', this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Inici
+          </button>
+          <button class="top-tab" onclick="switchScreen('accions', this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Accions
+          </button>
+          <button class="top-tab" onclick="switchScreen('inventari', this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Inventari
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="app-content">
+
+        <!-- ===== INICI ===== -->
+        <div class="screen active" id="s-inici">
+          <div class="hero-area">
+            <div class="hero-label">Mapa general del magatzem</div>
+            <div style="display:flex;gap:6px;align-items:flex-end;justify-content:center;padding:8px 0 16px;flex-wrap:wrap;">
+              <div style="display:grid;grid-template-columns:repeat(4,50px);grid-template-rows:repeat(2,36px);gap:4px;">
+                <div class="iso-block" style="width:50px;height:56px;background:var(--blue);"></div>
+                <div class="iso-block" style="width:50px;height:36px;background:rgba(27,110,243,0.6)"></div>
+                <div class="iso-block" style="width:50px;height:28px;background:rgba(43,127,255,0.8)"></div>
+                <div class="iso-block" style="width:50px;height:36px;background:var(--blue);"></div>
+                <div class="iso-block" style="width:50px;height:28px;background:rgba(27,110,243,0.5)"></div>
+                <div class="iso-block" style="width:50px;height:48px;background:rgba(43,127,255,0.9)"></div>
+                <div class="iso-block" style="width:50px;height:36px;background:rgba(27,110,243,0.65)"></div>
+                <div class="iso-block" style="width:50px;height:24px;background:rgba(78,155,255,0.7)"></div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+              <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:10px 12px;cursor:pointer;transition:all 0.2s;" onclick="switchScreen('recepcio')">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Recepció</div>
+                <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;">Accions de rebuda</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:10px 12px;cursor:pointer;transition:all 0.2s;" onclick="switchScreen('alertes')">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Alertes</div>
+                <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;">Gestionar estoc</div>
+              </div>
+            </div>
+
+            <button class="hero-cta" onclick="switchScreen('recepcio')">Recepció Fàcil</button>
+          </div>
+
+          <div class="quick-grid">
+            <div class="quick-card" onclick="switchScreen('estoc')">
+              <div class="icon-circle sm white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <div class="qc-val blue">1,248</div>
+              <div class="qc-label">Estoc total</div>
+              <div class="qc-sub" style="color:var(--blue);font-weight:600;font-size:0.65rem;">→ Veure detalls</div>
+            </div>
+            <div class="quick-card" onclick="switchScreen('alertes')">
+              <div class="icon-circle sm white" style="background:rgba(232,58,58,0.08);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2.5" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+              <div class="qc-val red">3</div>
+              <div class="qc-label">Alertes actives</div>
+            </div>
+            <div class="quick-card" onclick="switchScreen('recepcio')">
+              <div class="icon-circle sm white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><polyline points="16 16 12 20 8 16"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+              </div>
+              <div class="qc-val blue">7</div>
+              <div class="qc-label">Recepcions avui</div>
+            </div>
+            <div class="quick-card" onclick="switchScreen('tasques')">
+              <div class="icon-circle sm white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </div>
+              <div class="qc-val blue" id="tasques-count">12</div>
+              <div class="qc-label">Tasques pendents</div>
+              <div class="qc-sub" style="color:var(--blue);font-weight:600;font-size:0.65rem;">→ Veure tot</div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button class="btn-blue" onclick="switchScreen('recepcio')" style="font-size:0.8rem;padding:10px;">Nova ubicació</button>
+            <button class="btn-outline" onclick="switchScreen('tasques')" style="font-size:0.8rem;padding:10px;">Tasques pendents</button>
+          </div>
+        </div>
+
+        <!-- ===== ACCIONS ===== -->
+        <div class="screen" id="s-accions">
+          <div class="section-card" style="margin-top:16px;">
+            <div class="section-card-inner">
+              <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--dark);padding:0 0 12px;">Guia Ràpida</div>
+
+              <div class="guide-grid">
+                <div class="guide-card" onclick="switchScreen('recepcio')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Escanejar productes</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('recepcio')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <polyline points="16 16 12 20 8 16"/><line x1="12" y1="4" x2="12" y2="20"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Rebre productes</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('alertes')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Alertes stock baix</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('estoc')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Estoc total</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('tasques')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Tasques pendents</div>
+                </div>
+
+                <div class="guide-card" onclick="switchScreen('mapa')">
+                  <div class="gc-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                    </svg>
+                  </div>
+                  <div class="gc-label">Mapa magatzem</div>
+                </div>
+              </div>
+
+              <div class="dots">
+                <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+              </div>
+              <button class="btn-blue" onclick="showToast('✅ Entesos! Continuem.')">Entesos</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== INVENTARI ===== -->
+        <div class="screen" id="s-inventari">
+          <div class="search-bar" style="margin-top:14px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B8CADE" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Buscar producte..." oninput="filterProducts(this.value)">
+          </div>
+
+          <div class="section-card">
+            <div class="zona-head">
+              <div class="zona-name">Zona A — Prioritat</div>
+              <div class="zona-settings">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+              </div>
+            </div>
+            <div id="product-list">
+              <div class="product-row" data-name="Producte X">
+                <div class="prod-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                <div class="prod-info"><div class="prod-name">Producte X</div><div class="prod-meta">SKU-12045</div></div>
+                <div class="prod-right"><div class="prod-qty">155 Uds.</div><div class="prod-zone">Zona A</div></div>
+              </div>
+              <div class="product-row" data-name="Producte Y">
+                <div class="prod-icon" style="background:rgba(29,191,115,0.08);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                <div class="prod-info"><div class="prod-name">Producte Y</div><div class="prod-meta">SKU-47799</div></div>
+                <div class="prod-right"><div class="prod-qty">550 Uds.</div><div class="prod-zone">Zona B</div></div>
+              </div>
+              <div class="product-row" data-name="Materia Prima A">
+                <div class="prod-icon" style="background:rgba(232,58,58,0.08);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                <div class="prod-info"><div class="prod-name">Materia Prima A</div><div class="prod-meta">MP-001</div></div>
+                <div class="prod-right"><div class="prod-qty" style="color:var(--danger);">15 Uds.</div><div class="prod-zone" style="color:var(--danger);">⚠ Zona C</div></div>
+              </div>
+              <div class="product-row" data-name="Rack B">
+                <div class="prod-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>
+                <div class="prod-info"><div class="prod-name">Rack B · Nivel 2</div><div class="prod-meta">YAB-3106.1</div></div>
+                <div class="prod-right"><div class="prod-qty">45 Uds.</div><div class="prod-zone">Zona D</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-head">
+              <h3>Tasques pendents</h3>
+              <a class="see-all" onclick="switchScreen('tasques')">Veure tot</a>
+            </div>
+            <div class="task-section">
+              <div class="task-row">
+                <div class="task-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                <div class="task-info"><div class="task-name">Materia Prima A</div><div class="task-sub">MP-001</div></div>
+                <div class="task-right"><div class="task-qty">15 Uds.</div><div class="task-min">Min: <span>20 Uds</span></div></div>
+                <button class="task-btn" onclick="showToast('✅ Reabastiment iniciat per MP-001')">Reabastir</button>
+              </div>
+              <div class="task-row">
+                <div class="task-icon" style="background:rgba(245,155,0,0.08);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                <div class="task-info"><div class="task-name">Producte Y</div><div class="task-sub">SKU-47799</div></div>
+                <div class="task-right"><div class="task-qty" style="color:var(--warn);">550 Uds.</div><div class="task-min" style="color:var(--warn);">Revisió</div></div>
+                <button class="task-btn" style="background:var(--warn);" onclick="showToast('📋 Revisió programada per SKU-47799')">Revisar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="double-btn">
+            <button class="btn-blue" onclick="switchScreen('recepcio')" style="font-size:0.78rem;padding:10px;">Nova recepció</button>
+            <button class="btn-outline" onclick="switchScreen('estoc')" style="font-size:0.78rem;padding:10px;">Veure estoc</button>
+          </div>
+        </div>
+
+        <!-- ===== MAPA ===== -->
+        <div class="screen" id="s-mapa">
+          <div class="search-bar" style="margin-top:14px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B8CADE" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Busca producte o zona...">
+          </div>
+          <div class="map-container">
+            <div class="map-svg-area">
+              <div class="map-grid-inner">
+                <div class="mc mc-a" onclick="showToast('Zona A1 — Producte X: 155 Uds.')">A1</div>
+                <div class="mc mc-a" onclick="showToast('Zona A2 — Producte Y: 550 Uds.')">A2</div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-b" onclick="showToast('Zona B1 — Rack B: 45 Uds.')">B1</div>
+                <div class="mc mc-b" onclick="showToast('Zona B2 — Stock normal')">B2</div>
+                <div class="mc mc-b" onclick="showToast('Zona B3 — Stock normal')">B3</div>
+                <div class="mc mc-a" onclick="showToast('Zona A3 — Prioritat alta')">A3</div>
+                <div class="mc mc-a" onclick="showToast('Zona A4 — Prioritat alta')">A4</div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-b mc-selected" onclick="showToast('📍 Zona B4 — Materia Prima A: 15 Uds. ⚠ Baix!')">B4</div>
+                <div class="mc mc-empty"></div>
+                <div class="mc mc-empty"></div>
+                <div class="mc mc-c" onclick="showToast('Zona C1 — Stock mig')">C1</div>
+                <div class="mc mc-c" onclick="showToast('Zona C2 — Stock mig')">C2</div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-d" onclick="showToast('Zona D1 — OK ✅')">D1</div>
+                <div class="mc mc-d" onclick="showToast('Zona D2 — OK ✅')">D2</div>
+                <div class="mc mc-empty"></div>
+                <div class="mc mc-c" onclick="showToast('Zona C3 — Stock mig')">C3</div>
+                <div class="mc mc-empty"></div>
+                <div class="mc mc-path"></div>
+                <div class="mc mc-d" onclick="showToast('Zona D3 — OK ✅')">D3</div>
+                <div class="mc mc-d" onclick="showToast('Zona D4 — OK ✅')">D4</div>
+                <div class="mc mc-empty"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;padding:10px 14px;flex-wrap:wrap;border-bottom:1px solid rgba(0,0,0,0.05);">
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(27,110,243,0.7);"></div>Zona A</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(27,110,243,0.45);"></div>Zona B</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(27,110,243,0.25);"></div>Zona C</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--grey);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(0,180,120,0.3);"></div>Zona D</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.67rem;color:var(--blue);font-weight:700;"><div style="width:10px;height:10px;border-radius:3px;background:var(--blue);box-shadow:0 0 6px rgba(27,110,243,0.5);"></div>Localitzat</div>
+            </div>
+            <div class="section-head"><h3>Tasques pendents</h3></div>
+            <div class="pending-list">
+              <div class="pending-row">
+                <div class="task-icon" style="width:36px;height:36px;border-radius:10px;background:rgba(232,58,58,0.08);display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div class="pending-info">
+                  <div class="pending-name">Posicio B4 — Materia Prima A</div>
+                  <div class="pending-meta">Reabastiment · Pedido #2223301</div>
+                </div>
+                <button class="task-btn" onclick="showToast('✅ Reabastiment assignat a B4')">Reabastir</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-head"><h3>Pedidos pendents</h3></div>
+            <div class="pending-list">
+              <div class="pending-row">
+                <div class="pending-zone">P1</div>
+                <div class="pending-info">
+                  <div class="pending-name">Passadís 1 · Estant 3</div>
+                  <div class="pending-meta">Proveedor 2 · Pedido #22100</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="pending-qty">120 Uds</div>
+                  <div style="font-size:0.65rem;color:var(--danger);font-weight:700;">Min: 20 Ud.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-blue" onclick="switchScreen('recepcio')" style="font-size:0.75rem;padding:10px;">Escanejar Warehouse</button>
+            <button class="btn-outline" onclick="switchScreen('estoc')" style="font-size:0.75rem;padding:10px;">Veure estoc total</button>
+          </div>
+        </div>
+
+        <!-- ===== RECEPCIO ===== -->
+        <div class="screen" id="s-recepcio">
+          <div class="section-card" style="margin-top:16px;">
+            <div class="section-card-inner">
+              <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:var(--dark);padding:0 0 12px;">Recepció Fàcil</div>
+
+              <!-- Camera scan area -->
+              <div class="scan-visual" onclick="activateScan()">
+                <div style="display:flex;gap:4px;align-items:flex-end;margin-bottom:4px;">
+                  <div style="width:40px;height:30px;background:rgba(27,110,243,0.7);border-radius:6px;position:relative;"><div style="position:absolute;top:-10px;left:0;right:0;height:10px;background:rgba(27,110,243,0.5);border-radius:3px 3px 0 0;"></div></div>
+                  <div style="width:55px;height:42px;background:var(--blue);border-radius:6px;position:relative;"><div style="position:absolute;top:-12px;left:0;right:0;height:12px;background:rgba(43,127,255,0.8);border-radius:3px 3px 0 0;"></div></div>
+                  <div style="width:40px;height:28px;background:rgba(27,110,243,0.6);border-radius:6px;position:relative;"><div style="position:absolute;top:-9px;left:0;right:0;height:9px;background:rgba(27,110,243,0.45);border-radius:3px 3px 0 0;"></div></div>
+                </div>
+                <div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid #E83A3A;filter:drop-shadow(0 2px 4px rgba(232,58,58,0.4));"></div>
+                <div class="scan-txt" id="scan-txt">Toca per escanejar</div>
+                <div class="scan-sub">Apunta la càmera al codi de barres</div>
+              </div>
+
+              <!-- MANUAL SCAN INPUT -->
+              <div class="scan-manual-box">
+                <div class="scan-manual-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+                  Introducció manual de codi
+                </div>
+                <div class="scan-input-row">
+                  <input class="scan-input" id="manual-sku" type="text" placeholder="Escriu SKU o codi de barres..." onkeydown="if(event.key==='Enter') manualScan()">
+                  <button class="scan-go" onclick="manualScan()">Buscar</button>
+                </div>
+                <div id="scan-result-box" style="display:none;"></div>
+              </div>
+
+              <!-- Detected product -->
+              <div style="margin-bottom:10px;">
+                <div style="font-size:0.7rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Producte detectat</div>
+                <div class="detected-card">
+                  <div class="prod-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  </div>
+                  <div class="detected-info">
+                    <div class="detected-name" id="detected-name">Caixa (50p x 70g)</div>
+                    <div class="detected-meta" id="detected-meta">SKU-00234</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div class="qty-row">
+                      <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                      <div class="qty-val" id="qty-v">1</div>
+                      <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pending orders -->
+              <div style="font-size:0.7rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Pedidos pendents</div>
+              <div style="background:var(--blue-bg);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;" onclick="showToast('📦 Pedido #22100 seleccionat')">
+                <div class="prod-icon" style="background:rgba(27,110,243,0.15);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:0.82rem;font-weight:600;color:var(--dark);">Passadís 1 · Estant 3</div>
+                  <div style="font-size:0.67rem;color:var(--grey);">Proveedor 2 · Pedido #22100</div>
+                </div>
+                <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;color:var(--blue);">100 Uds</div>
+              </div>
+
+              <!-- Received history -->
+              <div style="font-size:0.7rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Rebuts avui</div>
+              <div class="recv-history" id="recv-history">
+                <div class="recv-item">
+                  <div class="ri-name">Caixa (50p x 70g)</div>
+                  <div class="ri-qty">×3</div>
+                  <div class="ri-time">09:14</div>
+                </div>
+                <div class="recv-item">
+                  <div class="ri-name">Producte X</div>
+                  <div class="ri-qty">×10</div>
+                  <div class="ri-time">10:32</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-green" onclick="confirmReceive()" style="font-size:0.75rem;padding:11px;">✅ Confirmar recepció</button>
+            <button class="btn-outline" onclick="showToast('📄 Obrint detalls del producte...')" style="font-size:0.75rem;padding:11px;">Veure detalls</button>
+          </div>
+        </div>
+
+        <!-- ===== ALERTES ===== -->
+        <div class="screen" id="s-alertes">
+          <div class="alert-card" style="margin-top:16px;">
+            <div class="alertes-title">Alertes de stock baix</div>
+
+            <div class="alert-row" onclick="openModal('alert-detail', 'Producte Z', 'SKU-47783', '150', '20')">
+              <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="alert-info"><div class="alert-name">Producte Z</div><div class="alert-meta">SKU-47783 · Zona A</div></div>
+              <div class="alert-right"><div class="alert-stock">150 Uds</div><div class="alert-min">Min: 20 Uds</div></div>
+              <div class="alert-status"></div>
+            </div>
+
+            <div class="alert-row" onclick="openModal('alert-detail', 'Materia Prima A', 'MP-001', '15', '20')">
+              <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="alert-info"><div class="alert-name">Materia Prima A</div><div class="alert-meta">MP-001 · Zona C</div></div>
+              <div class="alert-right"><div class="alert-stock" style="color:var(--danger);">15 Uds.</div><div class="alert-min">Crític — reposar ara</div></div>
+              <div class="alert-status"></div>
+            </div>
+
+            <div class="alert-row" onclick="openModal('alert-detail', 'Materia Prima B', 'MP-S93', '130', '100')">
+              <div class="alert-icon" style="background:rgba(245,155,0,0.08);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="alert-info"><div class="alert-name">Materia Prima B</div><div class="alert-meta">MP-S93 · Zona B</div></div>
+              <div class="alert-right"><div class="alert-stock">130 Uds</div><div class="alert-min warn">Min: 100 Uds</div></div>
+              <div class="alert-status warn"></div>
+            </div>
+
+            <div class="alert-row" onclick="showToast('✅ Rack B · Nivel 2 — Estoc OK')">
+              <div class="alert-icon" style="background:rgba(27,110,243,0.08);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+              <div class="alert-info"><div class="alert-name">Rack B · Nivel 2</div><div class="alert-meta">YAB-3106.1 · Zona D</div></div>
+              <div class="alert-right"><div class="alert-stock">45 Uds</div><div class="alert-min" style="color:var(--ok);">Estoc OK</div></div>
+              <div class="alert-status" style="background:var(--ok);box-shadow:0 0 6px var(--ok);"></div>
+            </div>
+
+            <div class="total-row">Total d'alertes crítiques: <strong>3</strong></div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-blue" onclick="showToast('📋 Ordre de compra generada!')" style="font-size:0.72rem;padding:11px;">Generar ordre de compra</button>
+            <button class="btn-outline" onclick="switchScreen('mapa')" style="font-size:0.72rem;padding:11px;">Veure al mapa</button>
+          </div>
+          <div style="padding:0 14px 14px;">
+            <button class="btn-outline" onclick="switchScreen('estoc')" style="font-size:0.75rem;">Veure estoc total</button>
+          </div>
+        </div>
+
+        <!-- ===== ESTOC TOTAL ===== -->
+        <div class="screen" id="s-estoc">
+          <div class="estoc-hero">
+            <div class="estoc-hero-title">Estoc total del magatzem</div>
+            <div class="estoc-big">1,248 <span>Uds.</span></div>
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:4px;">Actualitzat: avui 11:47</div>
+          </div>
+
+          <div class="estoc-grid">
+            <div class="estoc-mini">
+              <div class="em-val blue">4</div>
+              <div class="em-label">Zones</div>
+            </div>
+            <div class="estoc-mini">
+              <div class="em-val green">18</div>
+              <div class="em-label">Refs. OK</div>
+            </div>
+            <div class="estoc-mini">
+              <div class="em-val red">3</div>
+              <div class="em-label">Alertes</div>
+            </div>
+          </div>
+
+          <div class="bar-container">
+            <div class="bar-title">Distribució per zones</div>
+            <div class="bar-row">
+              <div class="bar-label-row"><span class="bar-name">Zona A — Prioritat</span><span class="bar-num">450 Uds</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:72%;"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label-row"><span class="bar-name">Zona B — General</span><span class="bar-num">380 Uds</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:60%;background:rgba(27,110,243,0.7);"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label-row"><span class="bar-name">Zona C — Secundari</span><span class="bar-num">273 Uds</span></div>
+              <div class="bar-track"><div class="bar-fill warn" style="width:43%;"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label-row"><span class="bar-name">Zona D — Sortida</span><span class="bar-num">145 Uds</span></div>
+              <div class="bar-track"><div class="bar-fill danger" style="width:23%;"></div></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-head"><h3>Tots els productes</h3><a class="see-all" onclick="showToast('Exportant llista completa...')">Exportar</a></div>
+            <div class="product-row" onclick="showToast('Producte X: 155 Uds. a Zona A')">
+              <div class="prod-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+              <div class="prod-info"><div class="prod-name">Producte X</div><div class="prod-meta">SKU-12045 · Zona A</div></div>
+              <div class="prod-right"><div class="prod-qty">155 Uds.</div><div class="prod-zone">✅ OK</div></div>
+            </div>
+            <div class="product-row" onclick="showToast('Producte Y: 550 Uds. a Zona B')">
+              <div class="prod-icon" style="background:rgba(29,191,115,0.08);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+              <div class="prod-info"><div class="prod-name">Producte Y</div><div class="prod-meta">SKU-47799 · Zona B</div></div>
+              <div class="prod-right"><div class="prod-qty">550 Uds.</div><div class="prod-zone">✅ OK</div></div>
+            </div>
+            <div class="product-row" onclick="switchScreen('alertes')">
+              <div class="prod-icon" style="background:rgba(232,58,58,0.08);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="prod-info"><div class="prod-name">Materia Prima A</div><div class="prod-meta">MP-001 · Zona C</div></div>
+              <div class="prod-right"><div class="prod-qty" style="color:var(--danger);">15 Uds.</div><div class="prod-zone" style="color:var(--danger);">⚠ CRÍTIC</div></div>
+            </div>
+            <div class="product-row" onclick="showToast('Materia Prima B: 130 Uds. a Zona B')">
+              <div class="prod-icon" style="background:rgba(245,155,0,0.08);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="prod-info"><div class="prod-name">Materia Prima B</div><div class="prod-meta">MP-S93 · Zona B</div></div>
+              <div class="prod-right"><div class="prod-qty" style="color:var(--warn);">130 Uds.</div><div class="prod-zone" style="color:var(--warn);">⚠ Baix</div></div>
+            </div>
+            <div class="product-row" onclick="showToast('Rack B: 45 Uds. a Zona D')">
+              <div class="prod-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6EF3" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>
+              <div class="prod-info"><div class="prod-name">Rack B · Nivel 2</div><div class="prod-meta">YAB-3106.1 · Zona D</div></div>
+              <div class="prod-right"><div class="prod-qty">45 Uds.</div><div class="prod-zone">✅ OK</div></div>
+            </div>
+          </div>
+
+          <div class="dbl-btn-row">
+            <button class="btn-blue" onclick="switchScreen('recepcio')" style="font-size:0.75rem;padding:10px;">Afegir recepció</button>
+            <button class="btn-outline" onclick="switchScreen('alertes')" style="font-size:0.75rem;padding:10px;">Veure alertes</button>
+          </div>
+        </div>
+
+        <!-- ===== TASQUES PENDENTS ===== -->
+        <div class="screen" id="s-tasques">
+          <div class="tp-header">
+            <div class="tp-title">Tasques Pendents</div>
+            <div class="tp-subtitle">12 tasques · 3 urgents</div>
+          </div>
+
+          <div class="priority-tabs">
+            <div class="p-tab active" onclick="filterTasks('all', this)">Totes (12)</div>
+            <div class="p-tab" onclick="filterTasks('urgent', this)">Urgents (3)</div>
+            <div class="p-tab" onclick="filterTasks('medium', this)">Importants (5)</div>
+            <div class="p-tab" onclick="filterTasks('normal', this)">Normals (4)</div>
+          </div>
+
+          <div class="tp-card" id="tasks-container">
+            <!-- Urgent tasks -->
+            <div class="tp-row" data-priority="urgent" onclick="showToast('📋 Reabastiment MP-001 iniciat')">
+              <div class="tp-prio urgent"></div>
+              <div class="tp-ico" style="background:rgba(232,58,58,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Reabastir Materia Prima A</div><div class="tp-meta">MP-001 · Zona C · 15 Uds.</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--danger);">CRÍTIC</div><div class="tp-due">Avui</div></div>
+                <button class="tp-action-btn" onclick="event.stopPropagation();completeTask(this,'Reabastiment MP-001')">Fer</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="urgent" onclick="showToast('📦 Pedido #2223301 pendent')">
+              <div class="tp-prio urgent"></div>
+              <div class="tp-ico" style="background:rgba(232,58,58,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Rebre pedido #2223301</div><div class="tp-meta">Passadís 1 · Estant 3 · 120 Uds</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--danger);">Endarrerit</div><div class="tp-due">Ahir</div></div>
+                <button class="tp-action-btn" onclick="event.stopPropagation();switchScreen('recepcio')">Rebre</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="urgent" onclick="showToast('🗺 Verificant ubicació B4')">
+              <div class="tp-prio urgent"></div>
+              <div class="tp-ico" style="background:rgba(232,58,58,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Verificar ubicació B4</div><div class="tp-meta">Materia Prima A · Stock baix</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--danger);">Urgent</div><div class="tp-due">Avui</div></div>
+                <button class="tp-action-btn" onclick="event.stopPropagation();switchScreen('mapa')">Mapa</button>
+              </div>
+            </div>
+
+            <!-- Medium tasks -->
+            <div class="tp-row" data-priority="medium" onclick="showToast('📋 Revisió Producte Y programada')">
+              <div class="tp-prio medium"></div>
+              <div class="tp-ico" style="background:rgba(245,155,0,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Revisar estoc Producte Y</div><div class="tp-meta">SKU-47799 · Zona B</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--warn);">Avui</div><div class="tp-due">550 Uds</div></div>
+                <button class="tp-action-btn" style="background:var(--warn);" onclick="event.stopPropagation();completeTask(this,'Revisió Y')">Fer</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="medium">
+              <div class="tp-prio medium"></div>
+              <div class="tp-ico" style="background:rgba(245,155,0,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Inventari Zona C</div><div class="tp-meta">Recompte general setmanal</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--warn);">Demà</div><div class="tp-due">273 Uds</div></div>
+                <button class="tp-action-btn" style="background:var(--warn);" onclick="event.stopPropagation();completeTask(this,'Inventari C')">Fer</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="medium">
+              <div class="tp-prio medium"></div>
+              <div class="tp-ico" style="background:rgba(245,155,0,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Revisar alertes Materia Prima B</div><div class="tp-meta">MP-S93 · Zona B · 130 Uds</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--warn);">Demà</div><div class="tp-due">Min: 100</div></div>
+                <button class="tp-action-btn" style="background:var(--warn);" onclick="event.stopPropagation();switchScreen('alertes')">Alertes</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="medium">
+              <div class="tp-prio medium"></div>
+              <div class="tp-ico" style="background:rgba(245,155,0,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Actualitzar ubicació Zona D</div><div class="tp-meta">Reorganitzar Rack D3–D4</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--warn);">Divendres</div><div class="tp-due">45 Uds</div></div>
+                <button class="tp-action-btn" style="background:var(--warn);" onclick="event.stopPropagation();completeTask(this,'Ubicació D')">Fer</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="medium">
+              <div class="tp-prio medium"></div>
+              <div class="tp-ico" style="background:rgba(245,155,0,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59B00" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 20 8 16"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Preparar recepció proveïdor 3</div><div class="tp-meta">Pedido #22105 · 80 Uds</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--warn);">Dijous</div><div class="tp-due">80 Uds</div></div>
+                <button class="tp-action-btn" style="background:var(--warn);" onclick="event.stopPropagation();switchScreen('recepcio')">Rebre</button>
+              </div>
+            </div>
+
+            <!-- Normal tasks -->
+            <div class="tp-row" data-priority="normal">
+              <div class="tp-prio normal"></div>
+              <div class="tp-ico" style="background:rgba(29,191,115,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Actualitzar etiquetes Zona A</div><div class="tp-meta">A1–A4 · 4 ubicacions</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--ok);">Dilluns</div><div class="tp-due">Rutina</div></div>
+                <button class="tp-action-btn" style="background:var(--ok);" onclick="event.stopPropagation();completeTask(this,'Etiquetes A')">Fer</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="normal">
+              <div class="tp-prio normal"></div>
+              <div class="tp-ico" style="background:rgba(29,191,115,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Configurar alertes mínims B2</div><div class="tp-meta">SKU divers · Zona B2</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--ok);">Pròxima setmana</div><div class="tp-due">Millora</div></div>
+                <button class="tp-action-btn" style="background:var(--ok);" onclick="event.stopPropagation();completeTask(this,'Alertes B2')">Fer</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="normal">
+              <div class="tp-prio normal"></div>
+              <div class="tp-ico" style="background:rgba(29,191,115,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Informe mensual d'estoc</div><div class="tp-meta">Tots els productes · Export PDF</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--ok);">31/01</div><div class="tp-due">Mensual</div></div>
+                <button class="tp-action-btn" style="background:var(--ok);" onclick="event.stopPropagation();showToast('📄 Generant informe PDF...')">Generar</button>
+              </div>
+            </div>
+
+            <div class="tp-row" data-priority="normal">
+              <div class="tp-prio normal"></div>
+              <div class="tp-ico" style="background:rgba(29,191,115,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2" stroke-linecap="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></div>
+              <div class="tp-info"><div class="tp-name">Revisar mapa magatzem</div><div class="tp-meta">Actualitzar plànol zones C–D</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="tp-right"><div class="tp-qty" style="color:var(--ok);">Pròxima setmana</div><div class="tp-due">Rutina</div></div>
+                <button class="tp-action-btn" style="background:var(--ok);" onclick="event.stopPropagation();switchScreen('mapa')">Mapa</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:0 14px 14px;">
+            <button class="btn-blue" onclick="switchScreen('recepcio')" style="font-size:0.78rem;padding:11px;">Nova tasca de recepció</button>
+          </div>
+        </div>
+
+      </div>
+      <!-- /app-content -->
+
+      <!-- BOTTOM NAV -->
+      <nav class="bottom-nav">
+        <div class="bnav-item active" id="bn-inici" onclick="switchScreen('inici'); setBnav('inici')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4E9BFF" stroke-width="2.5" stroke-linecap="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>Inici</span>
+        </div>
+        <div class="bnav-item" id="bn-cerca" onclick="switchScreen('inventari'); setBnav('cerca')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span>Inventari</span>
+        </div>
+        <div class="bnav-item" id="bn-tasques" onclick="switchScreen('tasques'); setBnav('tasques')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <span>Tasques</span>
+        </div>
+        <div class="bnav-item" id="bn-config" onclick="switchScreen('estoc'); setBnav('config')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          <span>Estoc</span>
+        </div>
+      </nav>
+
+      <!-- MODALS -->
+      <div id="modal-construccio" class="modal-overlay" style="display:none;" onclick="closeModal('construccio')">
+        <div class="modal-box" onclick="event.stopPropagation()">
+          <div class="construction-art">🚧</div>
+          <h2>En construcció</h2>
+          <p>Aquesta funcionalitat s'està desenvolupant.<br>Aviat disponible en la pròxima versió de CuiXA Easy Mode.</p>
+          <div style="background:var(--blue-bg);border-radius:12px;padding:12px;margin-bottom:16px;">
+            <div style="font-size:0.7rem;font-weight:700;color:var(--blue);text-align:center;margin-bottom:4px;">PRÒXIMAMENT</div>
+            <div style="font-size:0.72rem;color:var(--grey);text-align:center;">Notificacions en temps real · Push alerts · Historial d'alertes</div>
+          </div>
+          <button class="modal-close" onclick="closeModal('construccio')">Entesos, tornar</button>
+        </div>
+      </div>
+
+      <div id="modal-perfil" class="modal-overlay" style="display:none;" onclick="closeModal('perfil')">
+        <div class="modal-box" onclick="event.stopPropagation()">
+          <div style="width:64px;height:64px;border-radius:20px;background:var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h2>Perfil d'usuari</h2>
+          <p>Operari del magatzem<br><strong style="color:var(--dark);">Ivan Díaz</strong><br><span style="font-size:0.68rem;">CuiXA Easy Mode v2.1</span></p>
+          <button class="modal-close" onclick="closeModal('perfil')">Tancar</button>
+        </div>
+      </div>
+
+      <div id="modal-alert-detail" class="modal-overlay" style="display:none;" onclick="closeModal('alert-detail')">
+        <div class="modal-box" onclick="event.stopPropagation()">
+          <div style="width:56px;height:56px;border-radius:18px;background:rgba(232,58,58,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h2 id="modal-alert-name">Producte Z</h2>
+          <p id="modal-alert-info">SKU-47783 · Estoc baix</p>
+          <div style="background:var(--blue-bg);border-radius:12px;padding:14px;margin-bottom:16px;text-align:left;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:0.75rem;color:var(--grey);font-weight:600;">Estoc actual</span>
+              <span id="modal-stock" style="font-family:'Nunito',sans-serif;font-weight:800;color:var(--danger);">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="font-size:0.75rem;color:var(--grey);font-weight:600;">Mínim requerit</span>
+              <span id="modal-min" style="font-family:'Nunito',sans-serif;font-weight:800;color:var(--dark);">—</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="modal-close" onclick="closeModal('alert-detail');showToast('📋 Ordre de compra generada!')" style="background:var(--ok);">Reabastir ara</button>
+            <button class="modal-close" onclick="closeModal('alert-detail')" style="background:var(--navy2);">Tancar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+
+    </div><!-- /phone -->
+  </div>
+</div>
+
+<script>
+let qty = 1;
+let completedTasks = 0;
+let tasquesTotal = 12;
+let receivedToday = [
+  { name: 'Caixa (50p x 70g)', qty: 3, time: '09:14' },
+  { name: 'Producte X', qty: 10, time: '10:32' }
+];
+
+const skuDB = {
+  'SKU-12045': { name: 'Producte X', meta: 'SKU-12045 · Zona A · 155 Uds.', stock: 155 },
+  'SKU-47799': { name: 'Producte Y', meta: 'SKU-47799 · Zona B · 550 Uds.', stock: 550 },
+  'MP-001':    { name: 'Materia Prima A', meta: 'MP-001 · Zona C · 15 Uds. ⚠ CRÍTIC', stock: 15 },
+  'MP-S93':    { name: 'Materia Prima B', meta: 'MP-S93 · Zona B · 130 Uds.', stock: 130 },
+  'SKU-00234': { name: 'Caixa (50p x 70g)', meta: 'SKU-00234 · Zona A · 88 Uds.', stock: 88 },
+  'YAB-3106':  { name: 'Rack B · Nivel 2', meta: 'YAB-3106.1 · Zona D · 45 Uds.', stock: 45 },
+};
+
+function switchScreen(name, topTabBtn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s-' + name);
+  if (el) { el.classList.add('active'); document.querySelector('.app-content').scrollTop = 0; }
+
+  if (topTabBtn) {
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    topTabBtn.classList.add('active');
+  }
+
+  const mapToBnav = { inici:'inici', inventari:'cerca', mapa:'cerca', recepcio:'inici', alertes:'inici', accions:'inici', estoc:'config', tasques:'tasques' };
+  setBnav(mapToBnav[name] || 'inici');
+}
+
+function setBnav(name) {
+  document.querySelectorAll('.bnav-item').forEach(n => {
+    n.classList.remove('active');
+    const svg = n.querySelector('svg');
+    if (svg) svg.setAttribute('stroke', 'rgba(255,255,255,0.4)');
+    const sp = n.querySelector('span');
+    if (sp) sp.style.color = '';
+  });
+  const el = document.getElementById('bn-' + name);
+  if (el) {
+    el.classList.add('active');
+    const svg = el.querySelector('svg');
+    if (svg) svg.setAttribute('stroke', '#4E9BFF');
+    const sp = el.querySelector('span');
+    if (sp) sp.style.color = '#4E9BFF';
+  }
+}
+
+function changeQty(d) {
+  qty = Math.max(1, qty + d);
+  document.getElementById('qty-v').textContent = qty;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._t);
+  window._t = setTimeout(() => t.style.display = 'none', 2800);
+}
+
+function openModal(id, ...args) {
+  if (id === 'alert-detail' && args.length >= 4) {
+    document.getElementById('modal-alert-name').textContent = args[0];
+    document.getElementById('modal-alert-info').textContent = args[1] + ' · Alerta d\'estoc baix';
+    document.getElementById('modal-stock').textContent = args[2] + ' Uds.';
+    document.getElementById('modal-min').textContent = args[3] + ' Uds.';
+  }
+  const el = document.getElementById('modal-' + id);
+  if (el) el.style.display = 'flex';
+}
+
+function closeModal(id) {
+  const el = document.getElementById('modal-' + id);
+  if (el) el.style.display = 'none';
+}
+
+function activateScan() {
+  const txt = document.getElementById('scan-txt');
+  txt.textContent = '📷 Escaneig actiu...';
+  setTimeout(() => {
+    txt.textContent = 'Toca per escanejar';
+    showToast('✅ Codi detectat: SKU-00234 · Caixa (50p x 70g)');
+  }, 1800);
+}
+
+function manualScan() {
+  const input = document.getElementById('manual-sku');
+  const val = input.value.trim().toUpperCase();
+  const box = document.getElementById('scan-result-box');
+
+  if (!val) { showToast('⚠ Escriu un SKU o codi de barres'); return; }
+
+  const product = skuDB[val];
+  if (product) {
+    document.getElementById('detected-name').textContent = product.name;
+    document.getElementById('detected-meta').textContent = product.meta;
+
+    box.innerHTML = `
+      <div class="scan-result">
+        <div style="width:32px;height:32px;border-radius:10px;background:rgba(29,191,115,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1DBF73" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="scan-result-info">
+          <div class="scan-result-name">${product.name}</div>
+          <div class="scan-result-meta">${product.meta}</div>
+        </div>
+        <div class="scan-result-ok">${product.stock} Uds</div>
+      </div>`;
+    box.style.display = 'block';
+    showToast('✅ Producte trobat: ' + product.name);
+  } else {
+    box.innerHTML = `
+      <div class="scan-result" style="border-color:var(--danger);">
+        <div style="width:32px;height:32px;border-radius:10px;background:rgba(232,58,58,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A3A" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div class="scan-result-info">
+          <div class="scan-result-name" style="color:var(--danger);">Producte no trobat</div>
+          <div class="scan-result-meta">SKU "${val}" no existeix a la base de dades</div>
+        </div>
+      </div>`;
+    box.style.display = 'block';
+    showToast('❌ SKU no reconegut: ' + val);
+  }
+  input.value = '';
+}
+
+function confirmReceive() {
+  const name = document.getElementById('detected-name').textContent;
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+  receivedToday.push({ name, qty, time });
+
+  const hist = document.getElementById('recv-history');
+  const item = document.createElement('div');
+  item.className = 'recv-item';
+  item.innerHTML = `<div class="ri-name">${name}</div><div class="ri-qty">×${qty}</div><div class="ri-time">${time}</div>`;
+  hist.insertBefore(item, hist.firstChild);
+
+  showToast('✅ Recepció confirmada: ' + qty + '× ' + name);
+  qty = 1;
+  document.getElementById('qty-v').textContent = 1;
+}
+
+function filterProducts(query) {
+  const rows = document.querySelectorAll('#product-list .product-row');
+  rows.forEach(r => {
+    const name = r.dataset.name || r.querySelector('.prod-name')?.textContent || '';
+    r.style.display = name.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function filterTasks(priority, btn) {
+  document.querySelectorAll('.p-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const rows = document.querySelectorAll('#tasks-container .tp-row');
+  rows.forEach(r => {
+    if (priority === 'all' || r.dataset.priority === priority) r.style.display = '';
+    else r.style.display = 'none';
+  });
+}
+
+function completeTask(btn, name) {
+  const row = btn.closest('.tp-row');
+  row.style.opacity = '0.4';
+  row.style.pointerEvents = 'none';
+  setTimeout(() => row.remove(), 400);
+  completedTasks++;
+  const remaining = Math.max(0, tasquesTotal - completedTasks);
+  const el = document.getElementById('tasques-count');
+  if (el) el.textContent = remaining;
+  showToast('✅ Tasca completada: ' + name);
+}
+</script>
+</body>
+</html>
